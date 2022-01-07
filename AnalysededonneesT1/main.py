@@ -142,4 +142,4 @@ def comp (data, K):
 
 N1, N2 = generate()
 donnee = np.concatenate((N1, N2), axis=0)
-CAH_complete_methode(donnee,3)
+clustering(donnee,2,3)

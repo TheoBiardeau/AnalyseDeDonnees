@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-import seaborn
 
 X = np.transpose(pd.read_csv("notes.csv", header=0, index_col=0, sep=";"))
 nomi = list(X.index)
