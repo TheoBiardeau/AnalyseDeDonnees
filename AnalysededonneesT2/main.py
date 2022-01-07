@@ -7,6 +7,7 @@ X = np.transpose(pd.read_csv("notes.csv", header=0, index_col=0, sep=";"))
 nomi = list(X.index)
 nomv = list(X.columns)
 Data = X.to_numpy()
+print(Data.shape)
 cor = np.zeros((5,5))
 def histo():
     for i in range(0, len(nomv)):
