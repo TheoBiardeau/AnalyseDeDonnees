@@ -48,6 +48,8 @@ def my_acp(X):
     # Projections sur les axes factoriels
     C = np.dot(tc.T, u)
     C = C * -1
+    for i in range(2,n):
+        C[:, i] = C[:, i] * -1
     return (lamb, C, u)
 
 
@@ -56,11 +58,12 @@ lamb, C, u = my_acp(Data)
 acp = PCA()
 cc = acp.fit_transform(X)
 fig, ax = plt.subplots()
-ax.scatter(cc[:, 0], cc[:, 1], c="r", marker="2")
-plt.scatter(C[:, 0], C[:, 1], c="b", marker="1")
+ax.scatter(cc[:, 1], cc[:, 2], c="r", marker="2", label = "ACP sklearn")
+plt.scatter(C[:, 1], C[:, 2], c="b", marker="1", label = "My ACP")
 ax.axhline(y=0, color='k', )
 ax.axvline(x=0, color='k')
 ax.grid(True, which='both')
 plt.title("E1uE2")
+plt.legend()
 plt.show()
 #On peut observer que les points calculer avec l'ACP et notre ACP sont les mêmes, le programme fonctionne
