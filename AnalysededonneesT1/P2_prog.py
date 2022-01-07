@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import adjusted_rand_score
+import random
 
 
+#Fonction permetttant de générer aléatoirement un nuage de point
 def generate():
     # On fixe une seed pour toujour avoir la même génération de point
     np.random.seed(1500)
@@ -26,8 +28,10 @@ def generate():
     plt.show()
     return (N1, N2)
 
-
+#Fonction qui réalise l'algorythme de coalescence
 def coalescence(x, K, g):
+
+    #On definit toutes nos variables
     _Llen , _Clen = np.shape(x)
     clas = np.zeros(_Llen)
     distance = np.zeros(([_Llen,K]))
@@ -36,15 +40,19 @@ def coalescence(x, K, g):
     tempy = 0
     nb = 0
 
+    #Boucle qui réalise l'algoryuthme jusqu'a convergence des centres de gravité
     while 1 :
-        print("it")
+
+        #On calcule nos distance entre les centres de gravités
         for i in range(_Llen):
             for j in range (K):
                 distance[i,j] = np.sqrt(abs(x[i,0] - g[j,0])+abs(x[i,1] - g[j,1]))
 
+        #On attribut à nos class le numéros de leur cluster
         for i in range(_Llen):
             clas[i] = np.argmin([distance[i,:]])
 
+        #On calcule les nouveaux centres de gravité
         for i in range (K):
             for j in range (_Llen):
                 if clas[j] == i :
@@ -54,32 +62,42 @@ def coalescence(x, K, g):
             g2[i,0] = tempx / nb
             g2[i,1] = tempy / nb
             tempx = tempy = nb = 0
-
-        print(g2 == g)
         if (np.array_equal(g,g2)) :
             break
         else:
+            #Condition d'arrêt : Quand les centres de gravités N-1 et N sont égaux
             g[:,:] = g2[:,:]
 
     return (clas,g2)
 
 
 
+#Fonction qui réalise le choix random des centre de gravité
+def randomChoice (x,K):
 
+    n,p = np.shape(x)
+    g = np.zeros((K,2))
+    for i in range(K):
+        rd = random.randint(0,n)
+        g[i,:] = x[rd,:]
+    return (g)
+
+
+#Code de test et de vérification
 N1, N2 = generate()
 data = np.concatenate((N1, N2), axis=0)
-g = np.array([[-2.,2.],
-              [-6.,-2.],
-              [0,0]])
-cluster_labels ,g2  = coalescence(data,3,g)
-print("classe" , cluster_labels , "centroid", g2)
+g = randomChoice(data,2)
+cluster_labels ,g2  = coalescence(data,2,g)
 
-for i in range(0, 3):
+#Affichage des points avec leur cluster
+for i in range(0, 2):
     plt.scatter(data[cluster_labels == i, 0], data[cluster_labels == i, 1], label='Individu du cluster n°' + str(i + 1))
 plt.legend()
 plt.show()
 
+#Score de précision
 CX = np.zeros([128])
 CY = np.ones([128])
 C = np.concatenate((CX, CY))
 print("score :",adjusted_rand_score(cluster_labels, C)*100)
+
